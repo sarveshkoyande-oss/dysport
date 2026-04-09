@@ -1,14 +1,12 @@
 import { useState, useRef, Suspense, useEffect, useCallback, useMemo } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, useGLTF, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity, Eye, EyeOff, Syringe, Settings } from 'lucide-react';
 import * as THREE from 'three';
-import modelUrl from '../public/custom-model.asset?url';
 
 // Model URL
-const MODEL_URL = modelUrl;
+const MODEL_URL = '/custom-model.glb';
 
 // Pre-defined sites removed to allow custom marking
 const INITIAL_SITES: any[] = [];
@@ -169,8 +167,7 @@ function BustModel({
   position?: [number, number, number],
   scale?: number
 }) {
-  const gltf = useLoader(GLTFLoader, MODEL_URL);
-  const scene = gltf.scene;
+  const { scene } = useGLTF(MODEL_URL);
   const groupRef = useRef<THREE.Group>(null);
   const bustXOffset = 0.071;
 
@@ -1338,6 +1335,6 @@ export default function App() {
 }
 
 function ModelLoader() {
-  useLoader.preload(GLTFLoader, MODEL_URL);
+  useGLTF.preload(MODEL_URL);
   return null;
 }
