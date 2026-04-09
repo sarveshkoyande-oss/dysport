@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF, PerspectiveCamera, Environment, ContactShadows 
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity, Eye, EyeOff, Syringe, Settings } from 'lucide-react';
 import * as THREE from 'three';
-import modelUrl from '../public/custom-model-compressed.glb?url';
+import modelUrl from '../public/custom-model.gltf?url';
 
 // Model URL
 const MODEL_URL = modelUrl;
