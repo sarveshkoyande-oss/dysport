@@ -1,4 +1,4 @@
-declare module '*.glb?url' {
+declare module '*.asset?url' {
   const src: string;
   export default src;
 }
