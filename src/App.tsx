@@ -309,8 +309,8 @@ const getRegion = (p: {pos: [number, number, number]}) => {
   if (y < 0.5 && z < -1.0) return 'Cervical Paraspinal';
   if (y >= 0.5 && y < 1.5 && z < -1.0) return 'Occipitalis';
   if (y >= 1.5 && z < 0.5) return 'Temporalis';
-  if (y >= 2.4 && z > 1.5) return 'Frontalis';
-  if (y >= 2.0 && y < 2.4 && z > 1.5) return 'Corrugator';
+  if (y >= 2.45 && z > 1.4) return 'Frontalis';
+  if (y >= 1.6 && y < 2.45 && z > 1.4) return 'Corrugator';
   return 'Other';
 };
 
@@ -467,8 +467,7 @@ export default function App() {
       -0.14865070027136365,
       0.003149912344867827
     ],
-    "angle": 0.9,
-    "injected": true
+    "angle": 0.9
   },
   {
     "pos": [
