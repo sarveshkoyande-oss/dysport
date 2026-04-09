@@ -248,11 +248,12 @@ function BustModel({
       {/* Initial sites removed to allow custom marking */}
 
       {customPoints.map((p, idx) => {
-        if (p.injected) return null;
         return (
           <group 
             key={`custom-group-${idx}`} 
+            visible={!p.injected}
             onClick={(e) => { 
+              if (p.injected) return;
               e.stopPropagation(); 
               if (isMarkingMode) {
                 onSelectPoint(idx); 
