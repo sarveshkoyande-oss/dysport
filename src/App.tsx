@@ -2,7 +2,7 @@ import { useState, useRef, Suspense, useEffect, useCallback, useMemo } from 'rea
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
 import { motion, AnimatePresence } from 'motion/react';
-import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity, Eye, EyeOff, Syringe } from 'lucide-react';
+import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity, Eye, EyeOff, Syringe, Settings } from 'lucide-react';
 import * as THREE from 'three';
 
 // Model URL
@@ -149,7 +149,9 @@ function BustModel({
   isMarkingMode,
   showHeadache,
   showVectors,
-  onInjection
+  onInjection,
+  position = [0, 0, 0],
+  scale = 1.0
 }: { 
   rotation: number, 
   opacity: number, 
@@ -161,7 +163,9 @@ function BustModel({
   isMarkingMode: boolean,
   showHeadache: boolean,
   showVectors: boolean,
-  onInjection: (point: THREE.Vector3, normal: THREE.Vector3) => void
+  onInjection: (point: THREE.Vector3, normal: THREE.Vector3) => void,
+  position?: [number, number, number],
+  scale?: number
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const groupRef = useRef<THREE.Group>(null);
@@ -230,13 +234,15 @@ function BustModel({
 
   return (
     <group ref={groupRef} position={[0, -0.8, 0]} scale={1.6}>
-      <group position={[bustXOffset, 0, 0]}>
-        <primitive object={depthScene} />
-        <primitive 
-          object={scene} 
-          onClick={handleClick}
-          onPointerDown={(e: any) => isMarkingMode && e.stopPropagation()}
-        />
+      <group position={position} scale={scale}>
+        <group position={[bustXOffset, 0, 0]}>
+          <primitive object={depthScene} />
+          <primitive 
+            object={scene} 
+            onClick={handleClick}
+            onPointerDown={(e: any) => isMarkingMode && e.stopPropagation()}
+          />
+        </group>
       </group>
       
       {/* Initial sites removed to allow custom marking */}
@@ -301,377 +307,380 @@ export default function App() {
   const [rotation, setRotation] = useState(0);
   const [opacity, setOpacity] = useState(0.6);
   const [zoom, setZoom] = useState(20);
+  const [modelPosition, setModelPosition] = useState<[number, number, number]>([-0.14, 1.76, 0.00]);
+  const [modelScale, setModelScale] = useState(1.74);
   const [showMarkers, setShowMarkers] = useState(true);
   const [showUI, setShowUI] = useState(false);
   const [isMarkingMode, setIsMarkingMode] = useState(false);
   const [isInjectionMode, setIsInjectionMode] = useState(true);
   const [activeInjection, setActiveInjection] = useState<{ pos: [number, number, number], normal: [number, number, number], targetIndex: number | null } | null>(null);
   const [customPoints, setCustomPoints] = useState<{ pos: [number, number, number], normal: [number, number, number], angle: number, injected?: boolean }[]>([
-    {
-      "pos": [
-        -0.3088226585980245,
-        2.12989762661512,
-        2.188570517193376
-      ],
-      "normal": [
-        -0.0926019166721383,
-        -0.059169093714148135,
-        0.993943611769648
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        0.3088226585980245,
-        2.12989762661512,
-        2.188570517193376
-      ],
-      "normal": [
-        0.0926019166721384,
-        -0.059169093714148135,
-        0.993943611769648
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        -0.3766301011567541,
-        2.6385665857369385,
-        2.0927020198697397
-      ],
-      "normal": [
-        -0.031687192954212656,
-        -0.17824605564949209,
-        0.983475604907453
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        0.3766301011567541,
-        2.6385665857369385,
-        2.0927020198697397
-      ],
-      "normal": [
-        0.03168719295421278,
-        -0.17824605564949209,
-        0.983475604907453
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        -0.7583869778511303,
-        2.6400462782366247,
-        2.0218687533127113
-      ],
-      "normal": [
-        -0.4613902114569915,
-        0.09067162446430968,
-        0.8825518281034128
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        0.7583869778511303,
-        2.6400462782366247,
-        2.0218687533127113
-      ],
-      "normal": [
-        0.4613902114569916,
-        0.09067162446430968,
-        0.8825518281034127
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        -1.5586849880090023,
-        1.997349294153586,
-        0.31405409213874924
-      ],
-      "normal": [
-        -0.9762669203851673,
-        -0.15853200064419776,
-        -0.14754831389551556
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        1.5586849880090023,
-        1.997349294153586,
-        0.31405409213874924
-      ],
-      "normal": [
-        0.9762669203851673,
-        -0.15853200064419776,
-        -0.14754831389551568
-      ],
-      "angle": 0.7
-    },
-    {
-      "pos": [
-        -1.603353056955717,
-        1.9232473935331613,
-        -0.258360145420868
-      ],
-      "normal": [
-        -0.9929036510941185,
-        -0.11892156929661223,
-        -3.2081602129188185e-15
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        1.603353056955717,
-        1.9232473935331613,
-        -0.258360145420868
-      ],
-      "normal": [
-        0.9929036510941185,
-        -0.11892156929661223,
-        -3.770693638607861e-15
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        -1.5938633907875384,
-        2.61858384123546,
-        0.2313656569198506
-      ],
-      "normal": [
-        -0.9802195000243833,
-        -0.197888814609109,
-        0.00312231077084677
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        1.5938633907875384,
-        2.61858384123546,
-        0.2313656569198506
-      ],
-      "normal": [
-        0.9802195000243833,
-        -0.197888814609109,
-        0.0031223107708466505
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        -1.5718616481240346,
-        2.404662607282042,
-        -0.695497223065323
-      ],
-      "normal": [
-        -0.9658063445043651,
-        0.16996714290024104,
-        -0.19577863838898443
-      ],
-      "angle": 0.8
-    },
-    {
-      "pos": [
-        1.5718616481240346,
-        2.404662607282042,
-        -0.695497223065323
-      ],
-      "normal": [
-        0.9658063445043652,
-        0.16996714290024104,
-        -0.19577863838898413
-      ],
-      "angle": 0.8
-    },
-    {
-      "pos": [
-        -1.1266373719770095,
-        1.2417032230702305,
-        -1.2146475586589622
-      ],
-      "normal": [
-        -0.4575551991338677,
-        -0.6436084187135406,
-        -0.6135237918016079
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        1.1266373719770095,
-        1.2417032230702305,
-        -1.2146475586589622
-      ],
-      "normal": [
-        0.4575551991338676,
-        -0.6436084187135406,
-        -0.613523791801608
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        -0.8188842867324443,
-        0.7494305584916657,
-        -1.186017451743811
-      ],
-      "normal": [
-        -0.14132525270677762,
-        -0.4699231137276022,
-        -0.8713205151561166
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        0.8188842867324443,
-        0.7494305584916657,
-        -1.186017451743811
-      ],
-      "normal": [
-        0.14132525270677773,
-        -0.4699231137276022,
-        -0.8713205151561166
-      ],
-      "angle": 0.6
-    },
-    {
-      "pos": [
-        -0.5688116864366164,
-        1.1455563958567139,
-        -1.6472404623709007
-      ],
-      "normal": [
-        -0.1366616018911741,
-        -0.2272020946930871,
-        -0.964210980406058
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        0.5688116864366164,
-        1.1455563958567139,
-        -1.6472404623709007
-      ],
-      "normal": [
-        0.1366616018911738,
-        -0.2272020946930871,
-        -0.9642109804060581
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        0.15362660753307283,
-        0.38361649055445823,
-        -1.3083346489837535
-      ],
-      "normal": [
-        0.23490528324753832,
-        0.13042370873814554,
-        -0.9632285108432894
-      ],
-      "angle": 0.8
-    },
-    {
-      "pos": [
-        -0.15362660753307283,
-        0.38361649055445823,
-        -1.3083346489837535
-      ],
-      "normal": [
-        -0.23490528324753845,
-        0.13042370873814554,
-        -0.9632285108432894
-      ],
-      "angle": 0.8
-    },
-    {
-      "pos": [
-        1.1695034811260133,
-        -0.9219582213193275,
-        -0.6491958292589962
-      ],
-      "normal": [
-        0.9060247455089725,
-        0.4084874408841574,
-        -0.11071210938878161
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        -1.1695034811260133,
-        -0.9219582213193275,
-        -0.6491958292589962
-      ],
-      "normal": [
-        -0.9060247455089725,
-        0.4084874408841574,
-        -0.11071210938878165
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        1.570361653155265,
-        -1.3959050703726058,
-        -0.7268108029906659
-      ],
-      "normal": [
-        0.7446431199708593,
-        0.6674628258413081,
-        0
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        -1.570361653155265,
-        -1.3959050703726058,
-        -0.7268108029906659
-      ],
-      "normal": [
-        -0.7446431199708593,
-        0.6674628258413081,
-        9.119248133794113e-17
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        2.240260369301176,
-        -1.684560445453647,
-        -0.7535502545760652
-      ],
-      "normal": [
-        0.3489054291802293,
-        0.935896823677935,
-        0.04860182011110435
-      ],
-      "angle": 1.2
-    },
-    {
-      "pos": [
-        -2.240260369301176,
-        -1.684560445453647,
-        -0.7535502545760652
-      ],
-      "normal": [
-        -0.3489054291802293,
-        0.935896823677935,
-        0.04860182011110444
-      ],
-      "angle": 1.2
-    }
-  ]);
+  {
+    "pos": [
+      -0.34550031132836273,
+      1.6879567177715968,
+      1.6646364607780342
+    ],
+    "normal": [
+      0.19116908748325173,
+      -0.01920249290169265,
+      0.981369270079913
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      0.34550031132836273,
+      1.6879567177715968,
+      1.6646364607780342
+    ],
+    "normal": [
+      -0.19116908748325162,
+      -0.01920249290169265,
+      0.981369270079913
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -0.3357511922901365,
+      2.3194803457163187,
+      1.6303676352604886
+    ],
+    "normal": [
+      0.3995426780798087,
+      -0.07912088880673386,
+      0.913293782606258
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      0.3357511922901365,
+      2.3194803457163187,
+      1.6303676352604886
+    ],
+    "normal": [
+      -0.3995426780798086,
+      -0.07912088880673386,
+      0.913293782606258
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -0.7584133557393968,
+      2.401827929473208,
+      1.4331522888901127
+    ],
+    "normal": [
+      -0.1715812149489051,
+      0.23847605343372313,
+      0.9558708378307885
+    ],
+    "angle": 0.5
+  },
+  {
+    "pos": [
+      0.7584133557393968,
+      2.401827929473208,
+      1.4331522888901127
+    ],
+    "normal": [
+      0.17158121494890521,
+      0.23847605343372313,
+      0.9558708378307885
+    ],
+    "angle": 0.5
+  },
+  {
+    "pos": [
+      -1.4292247886730107,
+      1.6663301597253624,
+      -0.09628303342793748
+    ],
+    "normal": [
+      -0.9620592933428602,
+      -0.09456490257456128,
+      -0.2559284964471522
+    ],
+    "angle": 0.5
+  },
+  {
+    "pos": [
+      1.4292247886730107,
+      1.6663301597253624,
+      -0.09628303342793748
+    ],
+    "normal": [
+      0.9620592933428601,
+      -0.09456490257456128,
+      -0.25592849644715276
+    ],
+    "angle": 0.5
+  },
+  {
+    "pos": [
+      -1.4653419874842417,
+      1.7271007814756598,
+      -0.7250231066315584
+    ],
+    "normal": [
+      -0.9988243175802461,
+      0.04837210149878745,
+      0.0031815730302109887
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      1.4653419874842417,
+      1.7271007814756598,
+      -0.7250231066315584
+    ],
+    "normal": [
+      0.9988243175802461,
+      0.04837210149878745,
+      0.003181573030210867
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -1.4568787410335906,
+      2.2812739204023087,
+      -0.031982797430450155
+    ],
+    "normal": [
+      -0.9888847492812561,
+      -0.14865070027136365,
+      0.003149912344867827
+    ],
+    "angle": 0.9,
+    "injected": true
+  },
+  {
+    "pos": [
+      1.4568787410335906,
+      2.2812739204023087,
+      -0.031982797430450155
+    ],
+    "normal": [
+      0.9888847492812561,
+      -0.14865070027136365,
+      0.003149912344867706
+    ],
+    "angle": 0.9
+  },
+  {
+    "pos": [
+      -1.3894104126028943,
+      2.5688588530466703,
+      -0.9542070412966979
+    ],
+    "normal": [
+      -0.928364257552976,
+      0.371659872260533,
+      0.002957135336069847
+    ],
+    "angle": 1
+  },
+  {
+    "pos": [
+      1.3894104126028943,
+      2.5688588530466703,
+      -0.9542070412966979
+    ],
+    "normal": [
+      0.928364257552976,
+      0.371659872260533,
+      0.0029571353360697337
+    ],
+    "angle": 1
+  },
+  {
+    "pos": [
+      -0.6858217690846936,
+      0.7251613066383524,
+      -1.2516434086513508
+    ],
+    "normal": [
+      -0.3245084916302197,
+      -0.4874821023343594,
+      -0.8105895624565819
+    ],
+    "angle": 1
+  },
+  {
+    "pos": [
+      0.6858217690846936,
+      0.7251613066383524,
+      -1.2516434086513508
+    ],
+    "normal": [
+      0.32450849163021944,
+      -0.4874821023343594,
+      -0.810589562456582
+    ],
+    "angle": 1
+  },
+  {
+    "pos": [
+      -0.944082266361565,
+      1.2977069029347281,
+      -1.5290336649846277
+    ],
+    "normal": [
+      -0.45259202099480433,
+      -0.6281736227227391,
+      -0.6328968022096718
+    ],
+    "angle": 0.9
+  },
+  {
+    "pos": [
+      0.944082266361565,
+      1.2977069029347281,
+      -1.5290336649846277
+    ],
+    "normal": [
+      0.4525920209948046,
+      -0.6281736227227391,
+      -0.6328968022096716
+    ],
+    "angle": 0.9
+  },
+  {
+    "pos": [
+      -0.2580659274560016,
+      1.2098847993678383,
+      -1.824799846453104
+    ],
+    "normal": [
+      -0.1196945074680013,
+      -0.5220081751547073,
+      -0.8445002604816915
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      0.2580659274560016,
+      1.2098847993678383,
+      -1.824799846453104
+    ],
+    "normal": [
+      0.11969450746800102,
+      -0.5220081751547073,
+      -0.8445002604816916
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -0.18551901467545748,
+      0.35419723924713736,
+      -1.230429014347341
+    ],
+    "normal": [
+      0.046037885903130925,
+      -0.6281736227227391,
+      -0.776709992710896
+    ],
+    "angle": 0.9
+  },
+  {
+    "pos": [
+      0.18551901467545748,
+      0.35419723924713736,
+      -1.230429014347341
+    ],
+    "normal": [
+      -0.046037885903131195,
+      -0.6281736227227391,
+      -0.776709992710896
+    ],
+    "angle": 0.9
+  },
+  {
+    "pos": [
+      -0.8136592075330442,
+      -0.8615074872858683,
+      -0.9749968495933011
+    ],
+    "normal": [
+      -0.8063344176138032,
+      0.5403023058681409,
+      -0.2406205004669777
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      0.8136592075330442,
+      -0.8615074872858683,
+      -0.9749968495933011
+    ],
+    "normal": [
+      0.8063344176138033,
+      0.5403023058681409,
+      -0.24062050046697744
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -1.3350711622793456,
+      -1.3776627580160574,
+      -1.0298758690998866
+    ],
+    "normal": [
+      -0.5728645538942317,
+      0.8196480178454795,
+      0.0018247557478868728
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      1.3350711622793456,
+      -1.3776627580160574,
+      -1.0298758690998866
+    ],
+    "normal": [
+      0.5728645538942317,
+      0.8196480178454795,
+      0.0018247557478868028
+    ],
+    "angle": 0.8
+  },
+  {
+    "pos": [
+      -1.9436285635510904,
+      -1.69544939566949,
+      -1.0154085511161204
+    ],
+    "normal": [
+      -0.6425600851881543,
+      0.6137457494888116,
+      -0.45872943213555517
+    ],
+    "angle": 0.5
+  },
+  {
+    "pos": [
+      1.9436285635510904,
+      -1.69544939566949,
+      -1.0154085511161204
+    ],
+    "normal": [
+      0.6425600851881544,
+      0.6137457494888116,
+      -0.458729432135555
+    ],
+    "angle": 0.5
+  }
+]);
   const [showInfo, setShowInfo] = useState(false);
   const [showHeadache, setShowHeadache] = useState(true);
   const [showVectors, setShowVectors] = useState(false);
@@ -1000,6 +1009,8 @@ export default function App() {
               onSelectPoint={setSelectedPointIndex}
               showVectors={showVectors}
               onInjection={handleInjection}
+              position={modelPosition}
+              scale={modelScale}
             />
             
             <OrbitControls 
@@ -1157,6 +1168,73 @@ export default function App() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {showUI && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col gap-4 z-10 w-96 pointer-events-none"
+          >
+            <div className="pointer-events-auto flex flex-col gap-2 bg-slate-900/80 backdrop-blur-md p-4 border border-slate-800 rounded-xl shadow-xl">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Model Adjustments</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">Scale</span>
+                    <span className="text-[9px] font-mono text-blue-400">{modelScale.toFixed(2)}</span>
+                  </div>
+                  <input 
+                    type="range" min="0.1" max="5" step="0.01" value={modelScale} 
+                    onChange={(e) => setModelScale(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">Pos X (L/R)</span>
+                    <span className="text-[9px] font-mono text-blue-400">{modelPosition[0].toFixed(2)}</span>
+                  </div>
+                  <input 
+                    type="range" min="-10" max="10" step="0.01" value={modelPosition[0]} 
+                    onChange={(e) => setModelPosition([parseFloat(e.target.value), modelPosition[1], modelPosition[2]])}
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">Pos Y (U/D)</span>
+                    <span className="text-[9px] font-mono text-blue-400">{modelPosition[1].toFixed(2)}</span>
+                  </div>
+                  <input 
+                    type="range" min="-10" max="10" step="0.01" value={modelPosition[1]} 
+                    onChange={(e) => setModelPosition([modelPosition[0], parseFloat(e.target.value), modelPosition[2]])}
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">Pos Z (F/B)</span>
+                    <span className="text-[9px] font-mono text-blue-400">{modelPosition[2].toFixed(2)}</span>
+                  </div>
+                  <input 
+                    type="range" min="-10" max="10" step="0.01" value={modelPosition[2]} 
+                    onChange={(e) => setModelPosition([modelPosition[0], modelPosition[1], parseFloat(e.target.value)])}
+                    className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {showInfo && (
           <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -1238,18 +1316,19 @@ export default function App() {
             <RotateCw size={18} />
           </button>
         </div>
-
-        <button 
-          onClick={() => setShowUI(!showUI)}
-          className={`p-3 backdrop-blur-md border rounded-xl transition-all shadow-xl flex items-center justify-center ${!showUI ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-900/80 border-slate-800 text-slate-500 hover:text-slate-300'}`}
-          title={showUI ? "Show UI" : "Hide UI"}
-        >
-          {showUI ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
       </div>
 
-      <div className="absolute bottom-6 left-8 pointer-events-none opacity-30">
-        <p className="text-white text-[10px] font-bold tracking-[0.3em] uppercase">Visual Core v1.0</p>
+      <div className="absolute bottom-6 left-8 z-50 flex gap-3 pointer-events-auto items-center">
+        <button 
+          onClick={() => setShowUI(!showUI)}
+          className={`p-3 backdrop-blur-md border rounded-xl transition-all shadow-xl flex items-center justify-center ${showUI ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-900/80 border-slate-800 text-slate-500 hover:text-slate-300'}`}
+          title={showUI ? "Hide Controls" : "Show Controls"}
+        >
+          <Settings size={18} className={showUI ? "animate-spin-slow" : ""} />
+        </button>
+        <div className="pointer-events-none opacity-30 ml-2">
+          <p className="text-white text-[10px] font-bold tracking-[0.3em] uppercase">Visual Core v1.0</p>
+        </div>
       </div>
     </div>
   );
