@@ -1,6 +1,6 @@
 import { useState, useRef, Suspense, useEffect, useCallback, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, PerspectiveCamera, Environment, ContactShadows, Preload } from '@react-three/drei';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity, Eye, EyeOff, Syringe, Settings } from 'lucide-react';
 import * as THREE from 'three';
@@ -25,7 +25,7 @@ function Wave({ position, normal, angle, delay, color, isMarkingMode }: { positi
     meshRef.current.scale.setScalar(scale);
     
     if (meshRef.current.material instanceof THREE.MeshStandardMaterial) {
-      meshRef.current.material.opacity = (1 - progress) * 0.3;
+      meshRef.current.material.opacity = (1 - progress) * 0.15;
     }
   });
 
@@ -182,6 +182,11 @@ function BustModel({
           mesh.material.depthWrite = true;
           mesh.material.side = THREE.FrontSide;
           mesh.material.transparent = false;
+          mesh.material.map = null;
+          mesh.material.normalMap = null;
+          mesh.material.roughnessMap = null;
+          mesh.material.metalnessMap = null;
+          mesh.material.needsUpdate = true;
         }
       }
     });
@@ -198,6 +203,11 @@ function BustModel({
           mesh.material.opacity = opacity;
           mesh.material.side = THREE.FrontSide;
           mesh.material.depthWrite = false;
+          mesh.material.map = null;
+          mesh.material.normalMap = null;
+          mesh.material.roughnessMap = null;
+          mesh.material.metalnessMap = null;
+          mesh.material.needsUpdate = true;
         }
       }
     });
@@ -1022,6 +1032,7 @@ export default function App() {
               enabled={!isMarkingMode}
               makeDefault
             />
+            <Preload all />
           </Suspense>
         </Canvas>
         <Suspense fallback={<LoadingScreen />}>
