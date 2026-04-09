@@ -1,2 +1,2 @@
 *.glb -text -filter -merge -diff
-public/custom-model.glb -text -filter -merge -diff
+public/anime-head-v2.glb -text -filter -merge -diff
