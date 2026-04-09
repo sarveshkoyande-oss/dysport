@@ -6,7 +6,7 @@ import { RotateCcw, RotateCw, Info, MousePointer2, Trash2, Copy, Check, Activity
 import * as THREE from 'three';
 
 // Model URL
-const MODEL_URL = '/anime-head-v2.glb';
+const MODEL_URL = '/stylized_anime_female_head.glb';
 
 // Pre-defined sites removed to allow custom marking
 const INITIAL_SITES: any[] = [];
