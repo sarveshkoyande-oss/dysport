@@ -176,18 +176,12 @@ function BustModel({
     clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        if (mesh.material) {
-          mesh.material = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material).clone();
-          mesh.material.colorWrite = false;
-          mesh.material.depthWrite = true;
-          mesh.material.side = THREE.FrontSide;
-          mesh.material.transparent = false;
-          mesh.material.map = null;
-          mesh.material.normalMap = null;
-          mesh.material.roughnessMap = null;
-          mesh.material.metalnessMap = null;
-          mesh.material.needsUpdate = true;
-        }
+        mesh.material = new THREE.MeshStandardMaterial({
+          colorWrite: false,
+          depthWrite: true,
+          side: THREE.FrontSide,
+          transparent: false,
+        });
       }
     });
     return clone;
@@ -197,18 +191,15 @@ function BustModel({
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        if (mesh.material) {
-          mesh.material = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material).clone();
-          mesh.material.transparent = true;
-          mesh.material.opacity = opacity;
-          mesh.material.side = THREE.FrontSide;
-          mesh.material.depthWrite = false;
-          mesh.material.map = null;
-          mesh.material.normalMap = null;
-          mesh.material.roughnessMap = null;
-          mesh.material.metalnessMap = null;
-          mesh.material.needsUpdate = true;
-        }
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: '#e2e8f0', // Plain light gray/slate color
+          roughness: 0.6,
+          metalness: 0.1,
+          transparent: true,
+          opacity: opacity,
+          side: THREE.FrontSide,
+          depthWrite: false,
+        });
       }
     });
   }, [scene, opacity]);
